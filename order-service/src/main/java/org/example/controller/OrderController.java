@@ -49,6 +49,7 @@ public class OrderController {
 
     @GetMapping("/payment/{userId}")
     @CircuitBreaker(name = ORDER_SERVICE, fallbackMethod = "paymentFallback")
+    //fallback working for both  connection timeout and read timeout
     public String getPaymentStatusForUserRestTemplate(@PathVariable String userId) {
         //try {
             System.out.println("RestTemplate way...");
