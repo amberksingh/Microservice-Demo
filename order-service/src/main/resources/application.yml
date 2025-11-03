@@ -1,0 +1,84 @@
+spring:
+  application:
+    name: order-service
+
+#  cloud:
+#    openfeign:
+#      circuitbreaker:
+#        enabled: true
+#      client:
+#        config:
+#          payment-service:
+#            #connectTimeout: 2000      # 2 seconds to connect
+#            readTimeout: 5000         # 5 seconds to wait for response
+#            loggerLevel: full         # optional - logs request/response details
+
+resilience4j:
+  circuitbreaker:
+    instances:
+      order-service:
+        registerHealthIndicator: true
+        eventConsumerBufferSize: 10
+        failureRateThreshold: 50
+        minimumNumberOfCalls: 5
+        automaticTransitionFromOpenToHalfOpenEnabled: true
+        waitDurationInOpenState: 5s
+        permittedNumberOfCallsInHalfOpenState: 3
+        slidingWindowSize: 5
+        slidingWindowType: COUNT_BASED
+
+#        slidingWindowSize: 5                # how many recent calls are observed
+#        failureRateThreshold: 50             # % of failed calls that will open the circuit
+#        waitDurationInOpenState: 6s         # how long the breaker stays open before half-open test
+#        permittedNumberOfCallsInHalfOpenState: 3
+#        automaticTransitionFromOpenToHalfOpenEnabled: true
+#        recordExceptions:
+#          - feign.RetryableException
+#          - java.net.SocketTimeoutException
+#          - java.net.ConnectException
+#  retry:
+#    instances:
+#      payment-service:                   # instance name must match Feign client name
+#        maxAttempts: 4                   # total attempts (1 initial + 2 retries)
+#        waitDuration: 3s                 # delay between retries
+#        retryExceptions:
+#          - feign.RetryableException     # retry when Feign times out
+#          - java.net.SocketTimeoutException
+#          - java.net.ConnectException
+
+#management:
+#  endpoints:
+#    web:
+#      exposure:
+#        include: health,info,metrics,circuitbreakerevents,retries
+#  endpoint:
+#    health:
+#      show-details: always
+
+management:
+  health:
+    circuitbreakers:
+      enabled: true
+  endpoints:
+    web:
+      exposure:
+        include: health
+  endpoint:
+    health:
+      show-details: always
+
+
+
+#management:
+#  endpoints:
+#    web:
+#      exposure:
+#        include: *
+
+server:
+  port: 8080
+
+#logging:
+#  level:
+#    io.github.resilience4j.retry: DEBUG
+#    io.github.resilience4j.circuitbreaker: DEBUG
