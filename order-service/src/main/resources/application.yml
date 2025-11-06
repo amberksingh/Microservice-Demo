@@ -2,16 +2,21 @@ spring:
   application:
     name: order-service
 
-#  cloud:
-#    openfeign:
-#      circuitbreaker:
-#        enabled: true
-#      client:
-#        config:
-#          payment-service:
-#            #connectTimeout: 2000      # 2 seconds to connect
-#            readTimeout: 5000         # 5 seconds to wait for response
-#            loggerLevel: full         # optional - logs request/response details
+  cloud:
+    openfeign:
+      circuitbreaker:
+        enabled: true
+      client:
+        config:
+          order-service:
+            connectTimeout: 2000      # 2 seconds to connect
+            readTimeout: 3000         # 5 seconds to wait for response
+            loggerLevel: full         # optional - logs request/response details
+
+app:
+  restTemplate:
+    connectTimeout: 2000
+    readTimeout: 3000
 
 resilience4j:
   circuitbreaker:
@@ -36,11 +41,11 @@ resilience4j:
 #          - feign.RetryableException
 #          - java.net.SocketTimeoutException
 #          - java.net.ConnectException
-#  retry:
-#    instances:
-#      payment-service:                   # instance name must match Feign client name
-#        maxAttempts: 4                   # total attempts (1 initial + 2 retries)
-#        waitDuration: 3s                 # delay between retries
+  retry:
+    instances:
+      order-service:                   # instance name must match Feign client name
+        maxAttempts: 3                   # total attempts (1 initial + 2 retries)
+        waitDuration: 5s                 # delay between retries
 #        retryExceptions:
 #          - feign.RetryableException     # retry when Feign times out
 #          - java.net.SocketTimeoutException
@@ -62,7 +67,7 @@ management:
   endpoints:
     web:
       exposure:
-        include: health
+        include: health,info,metrics,circuitbreakerevents,retries
   endpoint:
     health:
       show-details: always

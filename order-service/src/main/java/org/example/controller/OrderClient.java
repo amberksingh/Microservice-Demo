@@ -7,9 +7,9 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 
 @FeignClient(
-        name = "payment-service",
-        url = Constants.BASE_URL_PAYMENT,
-        fallback = OrderClientFallback.class
+        name = "order-service",
+        url = Constants.BASE_URL_PAYMENT//,
+        //fallback = OrderClientFallback.class
 )
 public interface OrderClient {
 
