@@ -22,7 +22,7 @@ public class PaymentController {
         System.out.println("Attempt in payment-service: "+attempt);
         attempt++;
         System.out.println("payment-service : trying payment for userId : " + userId);
-        Thread.sleep(9000);
+        //Thread.sleep(9000);
         return "payment-service : payment success for userId : " + userId;
     }
 

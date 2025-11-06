@@ -6,8 +6,10 @@ import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 
+import static org.example.config.Constants.ORDER_SERVICE;
+
 @FeignClient(
-        name = "order-service",
+        name = ORDER_SERVICE,
         url = Constants.BASE_URL_PAYMENT//,
         //fallback = OrderClientFallback.class
 )
