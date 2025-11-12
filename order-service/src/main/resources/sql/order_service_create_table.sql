@@ -1,0 +1,8 @@
+CREATE TABLE IF NOT EXISTS orders (
+    id BIGINT PRIMARY KEY AUTO_INCREMENT,
+    order_number VARCHAR(50) NOT NULL,
+    product_name VARCHAR(100),
+    amount DOUBLE,
+    status VARCHAR(20),
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);

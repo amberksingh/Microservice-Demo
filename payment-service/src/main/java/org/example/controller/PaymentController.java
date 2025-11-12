@@ -26,6 +26,12 @@ public class PaymentController {
         return "payment-service : payment success for userId : " + userId;
     }
 
+    @GetMapping("/getForObject/{id}")
+    public Long getForObjectDemo(@PathVariable Long id) {
+        System.out.println("Inside payment-service : getForObjectDemo");
+        return id;
+    }
+
 //    @GetMapping("/orders/{userId}")
 //    List<String> getOrdersForUser(@PathVariable("userId") String userId);
 }

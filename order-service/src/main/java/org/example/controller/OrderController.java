@@ -32,7 +32,7 @@ public class OrderController {
         return "Hello..dummy message from order-service";
     }
 
-    //@GetMapping("/payment/{userId}")
+    @GetMapping("/payment/{userId}")
     @Retry(name = ORDER_SERVICE, fallbackMethod = "feignFallback")
     public String getPaymentStatusForUser(@PathVariable("userId") String userId) {
         System.out.println("feign : Attempt in order-service: "+attempt);
@@ -42,7 +42,7 @@ public class OrderController {
         //return "order-service : payment success for userId : " + userId;
     }
 
-    public String feignFallback(String userId, Throwable t) {
+    public String feignFallback(String userId, Exception t) {//works with Exception and Throwable also
         System.out.println("feign fallback method for @CircuitBreaker : " + t.getMessage());
         return "feign paymentFallback : Payment-service TIMED OUT for userId: " + userId;
     }
@@ -55,7 +55,7 @@ public class OrderController {
         return "paymentFallback : Payment-service TIMED OUT for userId: " + userId;
     }
 
-    @GetMapping("/payment/{userId}")
+    //@GetMapping("/payment/{userId}")
     //fallback working for both  connection timeout and read timeout
     //@CircuitBreaker(name = ORDER_SERVICE, fallbackMethod = "paymentFallback")
 

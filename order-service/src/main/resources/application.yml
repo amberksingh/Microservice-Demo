@@ -2,6 +2,32 @@ spring:
   application:
     name: order-service
 
+  datasource:
+    url: jdbc:mysql://localhost:3306/ecommerce?useSSL=false&allowPublicKeyRetrieval=true
+    username: root
+    password: root
+    driver-class-name: com.mysql.cj.jdbc.Driver
+
+#  sql:
+#    init:
+#      mode: always              # always run scripts on startup
+#      continue-on-error: true   # don’t fail if table exists
+#      schema-locations: classpath:sql/order_service_create_table.sql
+
+  jpa:
+    hibernate:
+      #ddl-auto: validate
+      ddl-auto: none
+    show-sql: true
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.MySQL8Dialect
+    #defer-datasource-initialization: true
+
+logging:
+  level:
+    org.springframework.jdbc.datasource.init: DEBUG
+
   cloud:
     openfeign:
       circuitbreaker:
@@ -25,7 +51,7 @@ resilience4j:
         registerHealthIndicator: true
         eventConsumerBufferSize: 10
         failureRateThreshold: 50
-        minimumNumberOfCalls: 5
+        minimumNumberOfCalls: 3
         automaticTransitionFromOpenToHalfOpenEnabled: true
         waitDurationInOpenState: 5s
         permittedNumberOfCallsInHalfOpenState: 3
@@ -87,3 +113,5 @@ server:
 #  level:
 #    io.github.resilience4j.retry: DEBUG
 #    io.github.resilience4j.circuitbreaker: DEBUG
+
+
