@@ -1,5 +1,6 @@
 package org.example.controller;
 
+import org.example.PaymentRequest;
 import org.example.entity.Payment;
 import org.example.repo.PaymentJdbcRepo;
 import org.example.repo.PaymentJpaRepo;
@@ -13,6 +14,8 @@ import java.util.List;
 @RestController
 @RequestMapping("/payment-table")
 public class PaymentTableController {
+
+    PaymentRequest paymentRequest;
 
     @Autowired
     PaymentJpaRepo jpaRepo;
@@ -48,4 +51,22 @@ public class PaymentTableController {
         System.out.println("payments added: " + save);
         return ResponseEntity.status(HttpStatus.CREATED).body(save);
     }
+
+    @PostMapping("/paymentWithOrderDetails")
+    public ResponseEntity<String> addPayment(@RequestBody PaymentRequest request) {
+
+        Payment payment = new Payment();
+        payment.setOrderId(request.getOrderId());
+        payment.setTransactionId(request.getTransactionId());
+        payment.setAmount(request.getAmount());
+        payment.setPaymentMethod(request.getPaymentMethod());
+        payment.setStatus(request.getStatus());
+
+        Payment saved = jpaRepo.save(payment);
+        System.out.println("💰 Payment created: " + saved);
+
+        return ResponseEntity.status(HttpStatus.CREATED)
+                .body("Payment successful for Order ID: " + saved.getOrderId());
+    }
+
 }
