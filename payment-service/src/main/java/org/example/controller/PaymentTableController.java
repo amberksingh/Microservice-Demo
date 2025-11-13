@@ -52,8 +52,8 @@ public class PaymentTableController {
         return ResponseEntity.status(HttpStatus.CREATED).body(save);
     }
 
-    @PostMapping("/paymentWithOrderDetails")
-    public ResponseEntity<String> addPayment(@RequestBody PaymentRequest request) {
+    @PostMapping("/paymentWithOrderDetailsForEntity")
+    public ResponseEntity<String> addPaymentForEntity(@RequestBody PaymentRequest request) {
 
         Payment payment = new Payment();
         payment.setOrderId(request.getOrderId());
@@ -68,5 +68,59 @@ public class PaymentTableController {
         return ResponseEntity.status(HttpStatus.CREATED)
                 .body("Payment successful for Order ID: " + saved.getOrderId());
     }
+
+    @PostMapping("/paymentWithOrderDetailsForObject")
+    public String addPaymentForObject(@RequestBody PaymentRequest request) {
+
+        Payment payment = new Payment();
+        payment.setOrderId(request.getOrderId());
+        payment.setTransactionId(request.getTransactionId());
+        payment.setAmount(request.getAmount());
+        payment.setPaymentMethod(request.getPaymentMethod());
+        payment.setStatus(request.getStatus());
+
+        Payment saved = jpaRepo.save(payment);
+        System.out.println("💰 Payment created: " + saved);
+
+        return "Payment successful for Order ID: " + saved.getOrderId();
+    }
+
+    @GetMapping("/fetchOrderByPaymentMethodForObject/{paymentMethod}")
+    public List<PaymentRequest> fetchOrderByPaymentMethodForObjet(@PathVariable String paymentMethod) {
+        System.out.println("Payment service fetchOrderByPaymentMethodForObject :");
+        List<Payment> byPaymentMethod = jpaRepo.findByPaymentMethodIgnoreCase(paymentMethod);
+        //byPaymentMethod.forEach(System.out::println);
+
+        return byPaymentMethod.stream()
+                .map(payment -> PaymentRequest.builder()
+                        .paymentMethod(payment.getPaymentMethod())
+                        .orderId(payment.getOrderId())
+                        .transactionId(payment.getTransactionId())
+                        .amount(payment.getAmount())
+                        .build()
+                )
+                .toList();
+        // Spring auto converts List<Payment> → JSON array
+    }
+
+    @GetMapping("/fetchOrderByPaymentMethodForEntity/{paymentMethod}")
+    public ResponseEntity<List<PaymentRequest>> fetchOrderByPaymentMethodForEntity(@PathVariable String paymentMethod) {
+        System.out.println("Payment service fetchOrderByPaymentMethodForEntity :");
+        List<Payment> byPaymentMethod = jpaRepo.findByPaymentMethodIgnoreCase(paymentMethod);
+        //byPaymentMethod.forEach(System.out::println);
+
+        List<PaymentRequest> list = byPaymentMethod.stream()
+                .map(payment -> PaymentRequest.builder()
+                        .paymentMethod(payment.getPaymentMethod())
+                        .orderId(payment.getOrderId())
+                        .transactionId(payment.getTransactionId())
+                        .amount(payment.getAmount())
+                        .build()
+                )
+                .toList();
+        return ResponseEntity.ok(list);
+        // Spring auto converts List<Payment> → JSON array
+    }
+
 
 }
