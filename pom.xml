@@ -16,9 +16,9 @@
         <relativePath/> <!-- lookup from repository -->
     </parent>
     <modules>
+        <module>common-dto</module>   <!-- MUST be first -->
         <module>order-service</module>
         <module>payment-service</module>
-        <module>common-dto</module>
     </modules>
 
     <properties>
