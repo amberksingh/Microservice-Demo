@@ -120,40 +120,12 @@ server:
       key-serializer: org.apache.kafka.common.serialization.StringSerializer
       value-serializer: org.springframework.kafka.support.serializer.JsonSerializer
       properties:
-        #adds a type header (e.g. __TypeId__) into the Kafka message.
-        #This tells consumers exactly what Java class the message was originally
-        #(e.g. com.example.common.events.PaymentCompletedEvent).
-        #This makes deserialization automatic on the consumer side.
         spring.json.add.type.headers: true
     consumer:
-      #group-id: order-group
+      group-id: order-group
       key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
       value-deserializer: org.springframework.kafka.support.serializer.JsonDeserializer
       properties:
-        #allows deserialization of all event classes.
-        #(If you want stricter control, you can instead set "com.example.common.events".)
-        #Without it, Spring Kafka will throw an exception:
-        #org.apache.kafka.common.errors.SerializationException:
-        #Class is not in the trusted packages
         spring.json.trusted.packages: "*"
-        #tells the deserializer to use the header info (sent by the producer) to pick the correct class automatically.
         spring.json.use.type.headers: true
-
-        #✅ Important Rules
-        #1. Type headers must exist
-        #
-        #The producer must add them:
-        #
-        #spring.json.add.type.headers: true
-        #
-        #
-        #The consumer must use them:
-        #
-        #spring.json.use.type.headers: true
-        #
-        #
-        #Otherwise, both listeners might get confused, or you’ll see:
-        #
-        #org.springframework.kafka.support.converter.ConversionException:
-        #Failed to convert JSON to target type
 
