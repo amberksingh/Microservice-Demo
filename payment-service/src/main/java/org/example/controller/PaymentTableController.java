@@ -72,12 +72,21 @@ public class PaymentTableController {
     @PostMapping("/paymentWithOrderDetailsForObject")
     public String addPaymentForObject(@RequestBody PaymentRequest request) {
 
+        System.out.println("Inside payment-service : "+request.getOrderId());
         Payment payment = new Payment();
         payment.setOrderId(request.getOrderId());
         payment.setTransactionId(request.getTransactionId());
         payment.setAmount(request.getAmount());
         payment.setPaymentMethod(request.getPaymentMethod());
         payment.setStatus(request.getStatus());
+
+//        System.out.println("simulating delay for blocking call in webclient...");
+//        try {
+//            Thread.sleep(4000);
+//        } catch (InterruptedException e) {
+//            throw new RuntimeException(e);
+//        }
+//        System.out.println("delay over for blocking call in webclient...");
 
         Payment saved = jpaRepo.save(payment);
         System.out.println("💰 Payment created: " + saved);
@@ -120,6 +129,31 @@ public class PaymentTableController {
                 .toList();
         return ResponseEntity.ok(list);
         // Spring auto converts List<Payment> → JSON array
+    }
+
+    @PostMapping("/addPaymentWebClient")
+    public String addPaymentWebClient(@RequestBody PaymentRequest request) {
+
+        System.out.println("Inside payment-service : "+request.getOrderId());
+        Payment payment = new Payment();
+        payment.setOrderId(request.getOrderId());
+        payment.setTransactionId(request.getTransactionId());
+        payment.setAmount(request.getAmount());
+        payment.setPaymentMethod(request.getPaymentMethod());
+        payment.setStatus(request.getStatus());
+
+        System.out.println("simulating delay for blocking call in webclient...");
+        try {
+            Thread.sleep(5000);
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
+        }
+        System.out.println("delay over for blocking call in webclient...");
+
+        Payment saved = jpaRepo.save(payment);
+        System.out.println("💰 Payment created: " + saved);
+
+        return "Payment successful for Order ID: " + saved.getOrderId();
     }
 
 
