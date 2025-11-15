@@ -1,5 +1,10 @@
 package org.example.controller;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.ExampleObject;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import org.example.PaymentRequest;
 import org.example.entity.Order;
 import org.example.repo.OrderJdbcRepo;
@@ -45,6 +50,40 @@ public class OrderTableController {
         return ResponseEntity.ok(ordersRaw);
     }
 
+
+    //swagger
+    @Operation(
+            summary = "Add a new order",
+            description = "Creates a new order record in the database.",
+            requestBody = @io.swagger.v3.oas.annotations.parameters.RequestBody(
+                    required = true,
+                    content = @Content(
+                            schema = @Schema(implementation = Order.class),
+                            examples = {
+                                    @ExampleObject(
+                                            name = "Sample Order",
+                                            value = """
+                                        {
+                                          "orderNumber": "ORD-1001",
+                                          "productName": "Dell Inspiron 15",
+                                          "amount": 45000,
+                                          "status": "CREATED"
+                                        }
+                                        """
+                                    )
+                            }
+                    )
+            ),
+            responses = {
+                    @ApiResponse(
+                            responseCode = "201",
+                            description = "Order created successfully",
+                            content = @Content(schema = @Schema(implementation = Order.class))
+                    ),
+                    @ApiResponse(responseCode = "400", description = "Invalid order details"),
+                    @ApiResponse(responseCode = "500", description = "Server error")
+            }
+    )
     @PostMapping("/addOrder")
     public ResponseEntity<Order> addOrder(@RequestBody Order order) {
         Order save = jpaRepo.save(order);
