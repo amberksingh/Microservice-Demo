@@ -5,22 +5,41 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.kafka.config.TopicBuilder;
 
+import static org.example.config.Constants.ORDER_EVENTS_TOPIC;
+import static org.example.config.Constants.PAYMENT_EVENTS_TOPIC;
+
 @Configuration
 public class KafkaConfig {
 
     @Bean
     public NewTopic orderTopic() {
-        return TopicBuilder.name("order-events")
+        return TopicBuilder.name(ORDER_EVENTS_TOPIC)
                 .partitions(4)
                 .replicas(1)
                 .build();
     }
 
     @Bean
-    public NewTopic paymentTopic() {
-        return TopicBuilder.name("payment-events")
+    public NewTopic paymentSuccessTopic() {
+        return TopicBuilder.name(PAYMENT_EVENTS_TOPIC)
                 .partitions(4)
                 .replicas(1)
                 .build();
     }
+
+//    @Bean
+//    public NewTopic paymentSuccessTopic() {
+//        return TopicBuilder.name("payment-success-events")
+//                .partitions(4)
+//                .replicas(1)
+//                .build();
+//    }
+//
+//    @Bean
+//    public NewTopic paymentFailedTopic() {
+//        return TopicBuilder.name("payment-fail-events")
+//                .partitions(4)
+//                .replicas(1)
+//                .build();
+//    }
 }

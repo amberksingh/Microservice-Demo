@@ -6,4 +6,8 @@ public class Constants {
     public static final String CREATE_TABLE_QUERY_FILE = "payment_service_create_table.sql";
     public static final String EXISTS_TABLE_QUERY_FILE = "payment_service_existsQuery.sql";
     public static final String PAYMENT_TABLE_NAME = "payments";
+    public static final String ORDER_EVENTS_TOPIC = "order-events";
+    public static final String PAYMENT_EVENTS_TOPIC = "payment-events";
+    public static final String PAYMENT_GROUP = "payment-group";
+    public static final String ORDER_GROUP = "order-group";
 }

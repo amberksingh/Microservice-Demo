@@ -34,6 +34,7 @@ public class KafkaVersionOrderController {
                 .userId(1L)
                 .orderStatus(OrderStatus.CREATED.toString())
                 .build();
+        System.out.println("OrderCreatedEvent : "+event);
         orderEventProducer.sendOrderCreatedEvent(event);
         return ResponseEntity.status(HttpStatus.CREATED).body(saved);
     }
