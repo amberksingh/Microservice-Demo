@@ -1,11 +1,13 @@
 package org.example.service;
 
+import lombok.extern.slf4j.Slf4j;
 import org.example.entity.Payment;
 import org.example.enums.PaymentStatus;
 import org.example.events.OrderCreatedEvent;
 import org.example.events.PaymentCompletedEvent;
 import org.example.events.PaymentFailedEvent;
 import org.example.repo.PaymentJpaRepo;
+import org.example.utility.OrderCreatedEventToPaymentMapper;
 import org.springframework.kafka.annotation.KafkaHandler;
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.kafka.core.KafkaTemplate;
@@ -14,23 +16,34 @@ import org.springframework.stereotype.Service;
 import static org.example.config.Constants.*;
 
 @Service
+@Slf4j
 @KafkaListener(topics = ORDER_EVENTS_TOPIC, groupId = PAYMENT_GROUP)
 public class OrderEventConsumer {
 
     private final KafkaTemplate<String, Object> kafkaTemplate;
     private final PaymentJpaRepo jpaRepo;
+    private final BalanceCheckProducer balanceCheckProducer;
 
-    public OrderEventConsumer(KafkaTemplate<String, Object> kafkaTemplate, PaymentJpaRepo jpaRepo) {
+    public OrderEventConsumer(KafkaTemplate<String, Object> kafkaTemplate, PaymentJpaRepo jpaRepo, BalanceCheckProducer balanceCheckProducer) {
         this.kafkaTemplate = kafkaTemplate;
         this.jpaRepo = jpaRepo;
+        this.balanceCheckProducer = balanceCheckProducer;
     }
 
     //@KafkaListener(topics = "order-events", groupId = "payment-group")
     @KafkaHandler
-    public void consumeOrder(OrderCreatedEvent event) {
-        System.out.println("PaymentService: processing " + event);
+    public void consumeOrder(OrderCreatedEvent orderCreatedEvent) {
+        //System.out.println("PaymentService: processing " + event);
+        Payment payment = OrderCreatedEventToPaymentMapper.toPayment(orderCreatedEvent);
+        jpaRepo.save(payment);
+        log.info("persisting payment details intermittently in payment-service {}", payment);
 
-        double balance = 50000;  // 🔥 Hardcoded for now
+        //ACTUAL FLOW=====USER SERVICE
+        log.info("ACTUAL BALANCE CHECK FLOW ===== USER SERVICE ENTERS THE CHAT");
+        balanceCheckProducer.requestBalance(orderCreatedEvent);
+
+
+        /*double balance = 50000;  // 🔥 Hardcoded for now
         if (event.getAmount() <= balance) {
 
             PaymentCompletedEvent success = new PaymentCompletedEvent();
@@ -78,7 +91,7 @@ public class OrderEventConsumer {
                     .build());
             System.out.println("💰 Payment created: " + saved2);
             kafkaTemplate.send(PAYMENT_EVENTS_TOPIC, failed);
-        }
+        }*/
     }
 
     @KafkaHandler(isDefault = true)

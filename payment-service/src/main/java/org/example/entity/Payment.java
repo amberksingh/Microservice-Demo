@@ -22,6 +22,9 @@ public class Payment {
     @Column(name = "order_id", nullable = false)
     private Long orderId;
 
+    @Column(name = "user_id")
+    private Long userId;
+
     @Column(name = "transaction_id", nullable = false)
     private String transactionId;
 

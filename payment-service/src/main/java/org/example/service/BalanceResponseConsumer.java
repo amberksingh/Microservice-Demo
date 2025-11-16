@@ -25,6 +25,7 @@ public class BalanceResponseConsumer {
     @KafkaHandler
     public void handle(UserBalanceResponseEvent userBalanceResponseEvent) {
         log.info("Callback triggered on payment from User");
+        //null issue
         Payment payment = repo.findByOrderId(userBalanceResponseEvent.getOrderId());
         if (userBalanceResponseEvent.isSuccess()) {
             log.info("Payment success → continue workflow");

@@ -27,6 +27,9 @@ public class Order {
     @Column(name = "product_name")
     private String productName;
 
+    @Column(name = "user_id")
+    private Long userId;
+
     private Double amount;
 
     private String status; // CREATED, PAID, FAILED
@@ -46,6 +49,13 @@ public class Order {
     }
 
     public Order(String orderNumber, String productName, Double amount, String status) {
+        this.orderNumber = orderNumber;
+        this.productName = productName;
+        this.amount = amount;
+        this.status = status;
+    }
+    public Order(Long userId, String orderNumber, String productName, Double amount, String status) {
+        this.userId = userId;
         this.orderNumber = orderNumber;
         this.productName = productName;
         this.amount = amount;

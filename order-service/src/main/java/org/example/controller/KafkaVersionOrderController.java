@@ -31,7 +31,7 @@ public class KafkaVersionOrderController {
                 .orderId(saved.getId())
                 .amount(saved.getAmount())
                 .productName(saved.getProductName())
-                .userId(1L)
+                .userId(order.getUserId())
                 .orderStatus(OrderStatus.CREATED.toString())
                 .build();
         System.out.println("OrderCreatedEvent : "+event);
