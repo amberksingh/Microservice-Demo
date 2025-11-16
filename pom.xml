@@ -19,6 +19,7 @@
         <module>common-dto</module>   <!-- MUST be first -->
         <module>order-service</module>
         <module>payment-service</module>
+        <module>user-service</module>
     </modules>
 
     <properties>
