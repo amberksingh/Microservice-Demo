@@ -37,7 +37,7 @@ public class User {
     @PrePersist
     public void prePersist() {
         if (this.createdAt == null) {
-            System.out.println("createdAt is null. Setting in code");
+            System.out.println("user createdAt is null. Setting in code");
             this.createdAt = LocalDateTime.now();
         }
     }
