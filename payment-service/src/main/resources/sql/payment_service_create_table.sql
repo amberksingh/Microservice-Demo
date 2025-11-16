@@ -1,6 +1,6 @@
 CREATE TABLE IF NOT EXISTS payments (
     id BIGINT PRIMARY KEY AUTO_INCREMENT,
-    order_id BIGINT NOT NULL,
+    order_id BIGINT NOT NULL UNIQUE,
     transaction_id VARCHAR(100) NOT NULL,
     amount DOUBLE,
     payment_method VARCHAR(50),

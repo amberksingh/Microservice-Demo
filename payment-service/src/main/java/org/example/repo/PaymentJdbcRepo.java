@@ -1,6 +1,5 @@
 package org.example.repo;
 
-import org.example.config.SqlLoader;
 import org.example.entity.Payment;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
@@ -16,8 +15,8 @@ public class PaymentJdbcRepo {
     @Autowired
     JdbcTemplate jdbcTemplate;
 
-    @Autowired
-    SqlLoader sqlLoader;
+//    @Autowired
+//    SqlLoader sqlLoader;
 
 //    public void createTable() throws IOException {
 //        String sql = sqlLoader.loadSql("payment_service_create_table.sql");
