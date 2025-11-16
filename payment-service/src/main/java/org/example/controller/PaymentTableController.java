@@ -1,9 +1,14 @@
 package org.example.controller;
 
+import lombok.extern.slf4j.Slf4j;
 import org.example.PaymentRequest;
 import org.example.entity.Payment;
+import org.example.enums.PaymentStatus;
+import org.example.events.OrderCreatedEvent;
+import org.example.events.PaymentCompletedEvent;
 import org.example.repo.PaymentJdbcRepo;
 import org.example.repo.PaymentJpaRepo;
+import org.example.service.BalanceCheckProducer;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -13,6 +18,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/payment-table")
+@Slf4j
 public class PaymentTableController {
 
     PaymentRequest paymentRequest;
@@ -22,6 +28,9 @@ public class PaymentTableController {
 
     @Autowired
     PaymentJdbcRepo jdbcRepo;
+
+    @Autowired
+    BalanceCheckProducer balanceCheckProducer;
 
     @GetMapping("/findById/{id}")
     public ResponseEntity<Payment> findById(@PathVariable Long id) {
@@ -154,6 +163,29 @@ public class PaymentTableController {
         System.out.println("💰 Payment created: " + saved);
 
         return "Payment successful for Order ID: " + saved.getOrderId();
+    }
+
+    //payment to user flow testing endpoint without order
+    @PostMapping("/balance-check")
+    public ResponseEntity<Payment> requestBalance(@RequestBody OrderCreatedEvent orderCreatedEvent) {
+
+        log.info("order received dummy orderCreatedEvent {}", orderCreatedEvent);
+        Payment payment = new Payment();
+        payment.setAmount(orderCreatedEvent.getAmount());
+        payment.setStatus(orderCreatedEvent.getOrderStatus());//CREATED till here
+        payment.setOrderId(orderCreatedEvent.getOrderId());
+        payment.setTransactionId("TXN-" + System.currentTimeMillis());
+        Payment save = jpaRepo.save(payment);
+
+        log.info("payment saved before hitting user service: {}", save);
+        log.info("payment status before payment completion : {}", save.getStatus());
+        log.info("inside balance-check flow on payment-service");
+
+        balanceCheckProducer.requestBalance(orderCreatedEvent);
+
+        Payment updatedPaymentAfterUserFlow = jpaRepo.findByOrderId(orderCreatedEvent.getOrderId());
+        return ResponseEntity.status(HttpStatus.CREATED).body(updatedPaymentAfterUserFlow);
+
     }
 
 

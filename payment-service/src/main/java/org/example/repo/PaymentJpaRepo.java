@@ -10,5 +10,7 @@ import java.util.List;
 public interface PaymentJpaRepo extends JpaRepository<Payment, Long> {
 
     List<Payment> findByPaymentMethodIgnoreCase(String paymentMethod);
+
+    Payment findByOrderId(Long orderId);
 }
 
