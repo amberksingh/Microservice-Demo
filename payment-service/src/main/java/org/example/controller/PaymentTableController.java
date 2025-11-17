@@ -183,6 +183,7 @@ public class PaymentTableController {
 
         balanceCheckProducer.requestBalance(orderCreatedEvent);
 
+        log.info("after sending balance request to user via kafka..");
         Payment updatedPaymentAfterUserFlow = jpaRepo.findByOrderId(orderCreatedEvent.getOrderId());
         return ResponseEntity.status(HttpStatus.CREATED).body(updatedPaymentAfterUserFlow);
 

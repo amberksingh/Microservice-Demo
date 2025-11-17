@@ -24,7 +24,7 @@ public class TableInitializerRunner implements CommandLineRunner {
     public void run(String... args) throws Exception {
 
         System.out.println("🔹 Ensuring payments table...");
-        jdbcTemplate.execute("USE ecommerce;");
+        jdbcTemplate.execute("USE ecommerce_payment;");
 
         String existsQuery = sqlLoader.loadSql(EXISTS_TABLE_QUERY_FILE);
         try {

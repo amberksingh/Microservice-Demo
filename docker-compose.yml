@@ -78,5 +78,27 @@ services:
       SPRING_DATASOURCE_PASSWORD: root
       SPRING_PROFILES_ACTIVE: dev
       KAFKA_BOOTSTRAP_SERVERS: kafka:9092
+  # ----------------------------------------------------
+  # ⭐ YOUR SPRING-BOOT PAYMENT SERVICE
+  # ----------------------------------------------------
+  payment-service:
+    build:
+      context: ./payment-service
+      dockerfile: Dockerfile
+    image: payment-service:1.0
+    container_name: ecommerce-payment-service
+    depends_on:
+      mysql:
+        condition: service_healthy
+      kafka:
+        condition: service_started
+    ports:
+      - "8081:8081"          # match your server.port
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:mysql://mysql:3306/ecommerce_payment?useSSL=false&allowPublicKeyRetrieval=true
+      SPRING_DATASOURCE_USERNAME: root
+      SPRING_DATASOURCE_PASSWORD: root
+      SPRING_PROFILES_ACTIVE: dev
+      KAFKA_BOOTSTRAP_SERVERS: kafka:9092
 volumes:
   mysql_data:
