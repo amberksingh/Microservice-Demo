@@ -174,6 +174,7 @@ public class PaymentTableController {
         payment.setAmount(orderCreatedEvent.getAmount());
         payment.setStatus(orderCreatedEvent.getOrderStatus());//CREATED till here
         payment.setOrderId(orderCreatedEvent.getOrderId());
+        payment.setUserId(orderCreatedEvent.getUserId());
         payment.setTransactionId("TXN-" + System.currentTimeMillis());
         Payment save = jpaRepo.save(payment);
 

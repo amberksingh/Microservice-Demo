@@ -30,6 +30,8 @@ public class UserBalanceRequestConsumer {
     @KafkaHandler
     public void consumeBalanceCheckRequest(UserBalanceRequestEvent balanceRequestEvent) {
 
+        log.info("Receive balance check request in user-service : {}", balanceRequestEvent);
+
         boolean ok = balanceCheckService.deductBalance(balanceRequestEvent.getUserId(), balanceRequestEvent.getAmount());
         UserBalanceResponseEvent balanceResponseEvent = new UserBalanceResponseEvent(
                 balanceRequestEvent.getOrderId(),

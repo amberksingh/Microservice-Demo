@@ -76,7 +76,7 @@ public class TableInitializerRunner implements CommandLineRunner {
 //                """;
 
         System.out.println("🔹 Ensuring orders table...");
-        jdbcTemplate.execute("USE ecommerce;");
+        jdbcTemplate.execute("USE ecommerce_order;");
 
         String existsQuery = sqlLoader.loadSql(EXISTS_TABLE_QUERY_FILE);
         try {
