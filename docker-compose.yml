@@ -39,7 +39,7 @@ services:
 
   mysql:
     image: mysql:8.0
-    container_name: mysql
+    container_name: ecommerce-mysql
     restart: always
     environment:
       MYSQL_ROOT_PASSWORD: root
@@ -48,10 +48,35 @@ services:
       - "3306:3306"
     volumes:
       - mysql_data:/var/lib/mysql
+      - ./mysql-init:/docker-entrypoint-initdb.d  # <-- this creates all DBs
     command: --default-authentication-plugin=mysql_native_password
+    healthcheck:
+      test: [ "CMD", "mysqladmin", "ping", "-h", "localhost" ]
+      interval: 5s
+      timeout: 3s
+      retries: 15
 
   # ----------------------------------------------------
   # ⭐ YOUR SPRING-BOOT USER SERVICE
   # ----------------------------------------------------
+  user-service:
+    build:
+      context: ./user-service
+      dockerfile: Dockerfile
+    image: user-service:1.0
+    container_name: ecommerce-user-service
+    depends_on:
+      mysql:
+        condition: service_healthy
+      kafka:
+        condition: service_started
+    ports:
+      - "7070:7070"          # match your server.port
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:mysql://mysql:3306/ecommerce_user?useSSL=false&allowPublicKeyRetrieval=true
+      SPRING_DATASOURCE_USERNAME: root
+      SPRING_DATASOURCE_PASSWORD: root
+      SPRING_PROFILES_ACTIVE: dev
+      KAFKA_BOOTSTRAP_SERVERS: kafka:9092
 volumes:
   mysql_data:
