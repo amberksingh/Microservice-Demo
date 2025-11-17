@@ -13,6 +13,7 @@ import java.io.Serializable;
 @Builder
 public class PaymentCompletedEvent implements Serializable {
     private Long orderId;
+    private Long userId;
     private Double amount;
     private String transactionId;
     private String paymentStatus;  // SUCCESS

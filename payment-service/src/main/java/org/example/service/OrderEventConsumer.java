@@ -33,7 +33,8 @@ public class OrderEventConsumer {
     //@KafkaListener(topics = "order-events", groupId = "payment-group")
     @KafkaHandler
     public void consumeOrder(OrderCreatedEvent orderCreatedEvent) {
-        //System.out.println("PaymentService: processing " + event);
+
+        log.info("Received OrderCreatedEvent in payment-service : {}", orderCreatedEvent);
         Payment payment = OrderCreatedEventToPaymentMapper.toPayment(orderCreatedEvent);
         jpaRepo.save(payment);
         log.info("persisting payment details intermittently in payment-service {}", payment);

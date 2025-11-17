@@ -20,14 +20,14 @@ public class PaymentEventConsumer {
 
     @KafkaHandler
     public void handle(PaymentCompletedEvent event) {
-        System.out.println("Callback triggered");
+        System.out.println("Callback triggered in order-service");
         System.out.println("✔ SUCCESS received: " + event);
         repo.updateStatus(event.getOrderId(), "SUCCESS");
     }
 
     @KafkaHandler
     public void handle(PaymentFailedEvent event) {
-        System.out.println("Callback triggered");
+        System.out.println("Callback triggered in order-service");
         System.out.println("❌ FAILED received: " + event);
         repo.updateStatus(event.getOrderId(), "FAILED");
     }
