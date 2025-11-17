@@ -2,7 +2,7 @@ spring:
   application:
     name: order-service
   config:
-    import: classpath:kafka_order_service.yml
+    import: classpath:kafka_order_service-dev.yml
 
   datasource:
     url: jdbc:mysql://mysql:3306/ecommerce_order?useSSL=false&allowPublicKeyRetrieval=true

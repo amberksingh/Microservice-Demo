@@ -18,4 +18,5 @@ public class UserBalanceResponseEvent implements Serializable {
     private Double amount;      // requested amount
     private boolean success;    // TRUE = deduction done
     private String message;     // "Deducted", "Insufficient Balance", "User not found"
+    private String paymentStatus;
 }

@@ -4,7 +4,7 @@ spring:
   application:
     name: user-service
   config:
-    import: classpath:kafka_user_service.yml
+    import: classpath:kafka_user_service-dev.yml
   datasource:
     url: jdbc:mysql://mysql:3306/ecommerce_user?useSSL=false&allowPublicKeyRetrieval=true
     username: root

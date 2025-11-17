@@ -59,8 +59,9 @@ public class BalanceResponseConsumer {
             paymentFailedEvent.setOrderId(userBalanceResponseEvent.getOrderId());
             paymentFailedEvent.setAmount(userBalanceResponseEvent.getAmount());
             paymentFailedEvent.setTransactionId("TXN-" + System.currentTimeMillis());
-            paymentFailedEvent.setPaymentStatus(PaymentStatus.SUCCESS.toString());
+            paymentFailedEvent.setPaymentStatus(userBalanceResponseEvent.getPaymentStatus());
             paymentFailedEvent.setUserId(userBalanceResponseEvent.getUserId());
+            paymentFailedEvent.setReason(userBalanceResponseEvent.getMessage());
 
             log.info("sending back paymentFailedEvent back to order-service : {}", paymentFailedEvent);
             kafkaTemplate.send(PAYMENT_EVENTS_TOPIC, paymentFailedEvent);

@@ -2,7 +2,7 @@ spring:
   application:
     name: payment-service
   config:
-    import: classpath:kafka_payment_service.yml
+    import: classpath:kafka_payment_service-dev.yml
 
   datasource:
     url: jdbc:mysql://mysql:3306/ecommerce_payment?useSSL=false&allowPublicKeyRetrieval=true

@@ -10,4 +10,7 @@ public class Constants {
     public static final String USER_BALANCE_RESPONSES_TOPIC = "user-balance-responses";
 
     public static final String USER_GROUP = "user-balance-group";
+
+    public static final String BALANCE_DEDUCTED = "BALANCE_DEDUCTED";
+    public static final String BALANCE_NOT_DEDUCTED = "BALANCE_NOT_DEDUCTED";
 }

@@ -33,12 +33,22 @@ public class UserBalanceRequestConsumer {
         log.info("Receive balance check request in user-service : {}", balanceRequestEvent);
 
         boolean ok = balanceCheckService.deductBalance(balanceRequestEvent.getUserId(), balanceRequestEvent.getAmount());
+        String paymentStatus;
+        if (ok) {
+            log.info("Balance deducted for userId: {}", balanceRequestEvent.getUserId());
+            paymentStatus = BALANCE_DEDUCTED;
+        } else {
+            log.warn("Balance not deducted for userId: {}", balanceRequestEvent.getUserId());
+            paymentStatus = BALANCE_NOT_DEDUCTED;
+        }
+
         UserBalanceResponseEvent balanceResponseEvent = new UserBalanceResponseEvent(
                 balanceRequestEvent.getOrderId(),
                 balanceRequestEvent.getUserId(),
                 balanceRequestEvent.getAmount(),
                 ok,
-                ok ? "Balance deducted" : "Insufficient balance"
+                ok ? "Balance deducted" : "Insufficient balance",
+                paymentStatus
         );
         kafkaTemplate.send(USER_BALANCE_RESPONSES_TOPIC, balanceResponseEvent);
         log.info("User-Service sent balance response: {}", balanceResponseEvent);
