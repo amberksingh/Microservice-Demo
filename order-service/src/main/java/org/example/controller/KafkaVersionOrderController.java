@@ -29,7 +29,7 @@ public class KafkaVersionOrderController {
     public ResponseEntity<Order> addOrder(@RequestBody Order order) {
         log.info("received Order request in order-service : {}", order);
         Order saved = jpaRepo.save(order);
-        System.out.println("order added to db: " + saved);
+        //System.out.println("order added to db: " + saved);
         log.info("Order saved in order-service db : {}", saved);
         OrderCreatedEvent event = OrderCreatedEvent.builder()
                 .orderId(saved.getId())
@@ -38,7 +38,7 @@ public class KafkaVersionOrderController {
                 .userId(order.getUserId())
                 .orderStatus(OrderStatus.CREATED.toString())
                 .build();
-        System.out.println("OrderCreatedEvent : "+event);
+        //System.out.println("OrderCreatedEvent : "+event);
         log.info("OrderCreatedEvent by mapping Order to OrderCreatedEvent : {}",event);
         orderEventProducer.sendOrderCreatedEvent(event);
         return ResponseEntity.status(HttpStatus.CREATED).body(saved);

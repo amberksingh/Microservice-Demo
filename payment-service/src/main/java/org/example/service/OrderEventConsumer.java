@@ -8,9 +8,12 @@ import org.example.events.PaymentCompletedEvent;
 import org.example.events.PaymentFailedEvent;
 import org.example.repo.PaymentJpaRepo;
 import org.example.utility.OrderCreatedEventToPaymentMapper;
+import org.springframework.kafka.annotation.DltHandler;
 import org.springframework.kafka.annotation.KafkaHandler;
 import org.springframework.kafka.annotation.KafkaListener;
+import org.springframework.kafka.annotation.RetryableTopic;
 import org.springframework.kafka.core.KafkaTemplate;
+import org.springframework.retry.annotation.Backoff;
 import org.springframework.stereotype.Service;
 
 import static org.example.config.Constants.*;
@@ -18,6 +21,13 @@ import static org.example.config.Constants.*;
 @Service
 @Slf4j
 @KafkaListener(topics = ORDER_EVENTS_TOPIC, groupId = PAYMENT_GROUP)
+@RetryableTopic(
+        attempts = "4",
+        backoff = @Backoff(delay = 2000, multiplier = 2),
+        dltTopicSuffix = "-dlq",
+        retryTopicSuffix = "-retry",
+        include = RuntimeException.class
+)
 public class OrderEventConsumer {
 
     private final KafkaTemplate<String, Object> kafkaTemplate;
@@ -30,11 +40,23 @@ public class OrderEventConsumer {
         this.balanceCheckProducer = balanceCheckProducer;
     }
 
-    //@KafkaListener(topics = "order-events", groupId = "payment-group")
+    @DltHandler
+    public void handleDlq(OrderCreatedEvent event) {
+        log.error("OrderCreatedEvent moved to DLQ after retries: {}", event);
+    }
+
     @KafkaHandler
     public void consumeOrder(OrderCreatedEvent orderCreatedEvent) {
 
         log.info("Received OrderCreatedEvent in payment-service : {}", orderCreatedEvent);
+
+        if (orderCreatedEvent.getAmount() == 777.0) {
+            log.error("Simulating failure for amount 777.0 …");
+            throw new RuntimeException("payment-service: Simulated Error for Retry in OrderEventConsumer");
+        }
+
+        log.info("Event processed successfully.");
+
         Payment payment = OrderCreatedEventToPaymentMapper.toPayment(orderCreatedEvent);
         jpaRepo.save(payment);
         log.info("persisting payment details intermittently in payment-service {}", payment);
