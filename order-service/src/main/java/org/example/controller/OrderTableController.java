@@ -50,6 +50,23 @@ public class OrderTableController {
         return ResponseEntity.ok(ordersRaw);
     }
 
+    //for report-service integration
+    @GetMapping("/findById/v2/{id}")
+    public Order findByIdReport(@PathVariable Long id) {
+        Order order = jpaRepo.findById(id).orElseThrow(() -> new RuntimeException("order not found for id : " + id));
+        System.out.println("report service call , order : findById : " + order);
+        return order;
+    }
+
+    //for report-service integration
+    @GetMapping("/findAllOrders/v2")
+    public List<Order> findAllOrdersReport() {
+        List<Order> ordersRaw = jdbcRepo.findOrdersRaw();
+        System.out.println("report service call , ordersRaw : ");
+        ordersRaw.forEach(System.out::println);
+        return ordersRaw;
+    }
+
 
     //swagger
     @Operation(
