@@ -55,7 +55,9 @@ public class OrderTableController {
     public Order findByIdReport(@PathVariable Long id) {
         Order order = jpaRepo.findById(id).orElseThrow(() -> new RuntimeException("order not found for id : " + id));
         System.out.println("report service call , order : findById : " + order);
-        return order;
+        //simulate error for report-service
+        throw new RuntimeException("exception occurred in order-service for findByIdReport");
+        //return order;
     }
 
     //for report-service integration
@@ -64,7 +66,9 @@ public class OrderTableController {
         List<Order> ordersRaw = jdbcRepo.findOrdersRaw();
         System.out.println("report service call , ordersRaw : ");
         ordersRaw.forEach(System.out::println);
-        return ordersRaw;
+        //simulate error for report-service
+        throw new RuntimeException("exception occurred in order-service for findAllOrdersReport");
+        //return ordersRaw;
     }
 
 
